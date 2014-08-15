@@ -4,8 +4,10 @@ describe "Session API" do
 
   Given!(:booth_host) { "dummy-booth.com".tap {|host| host! host } }
 
+  Given(:polls_open) { DateTime.now - 1.year }
+  Given(:polls_close) { DateTime.now + 1.year }
   Given(:election_uri) { "http://dummy-election.org/electionID" }
-  Given(:election) { ClearElection::Factory.election(booth: booth_uri) }
+  Given(:election) { ClearElection::Factory.election(booth: booth_uri, pollsOpen: polls_open, pollsClose: polls_close) }
   Given(:accessToken) { "TestAccessToken" }
 
   When { post "/sessions", election: election_uri, accessToken: accessToken }
@@ -16,17 +18,30 @@ describe "Session API" do
     describe "with this booth agent" do
       Given(:booth_uri) { "http://#{booth_host}" }
 
-      describe "with valid access token" do
-        Given { stub_request(:post, election.registrar.uri + "redeem") }
+      describe "if polls are open" do
 
-        Then { expect(response).to have_http_status 200 }
-        Then { expect(response_json).to match_json_schema(:session_schema) }
-        Then { expect(response_json["ballot"].map(&it["contestId"])).to match_array election.contests.map(&:contestId) }
+        describe "with valid access token" do
+          Given { stub_request(:post, election.registrar.uri + "redeem") }
+
+          Then { expect(response).to have_http_status 200 }
+          Then { expect(response_json).to match_json_schema(:session_schema) }
+          Then { expect(response_json["ballot"].map(&it["contestId"])).to match_array election.contests.map(&:contestId) }
+        end
+
+        describe "with invalid access token" do
+          Given { stub_request(:post, election.registrar.uri + "redeem").to_return status: 403 }
+          Then { expect(response).to have_http_status 403 }
+        end
       end
 
-      describe "with invalid access token" do
-        Given { stub_request(:post, election.registrar.uri + "redeem").to_return status: 403 }
-        Then { expect(response).to have_http_status 403 }
+      describe "if polls haven't opened yet" do
+        Given(:polls_open) { DateTime.now + 1.day }
+        Then { expect(response).to have_http_status 422 }
+      end
+
+      describe "if polls are closed" do
+        Given(:polls_close) { DateTime.now - 1.day }
+        Then { expect(response).to have_http_status 422 }
       end
 
     end
