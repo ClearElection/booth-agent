@@ -24,6 +24,7 @@ group :test do
   gem 'its-it'
   gem 'json-schema-rspec'
   gem 'rspec-given'
+  gem 'simplecov'
   gem 'webmock'
 end
 
