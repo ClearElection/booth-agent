@@ -1,14 +1,31 @@
 source 'https://rubygems.org'
 
+gem 'clear_election', "~> 0.0.0", path: "../../lib/clear_election"
+
+gem 'active_model_serializers', "~> 0.8.0"
+gem 'json-schema'
+gem 'pg'
 gem 'rails', '4.1.4'
-
 gem 'rails-api'
+gem 'schema_associations'
+gem 'schema_plus'
+gem 'schema_validations'
 
-gem 'spring', :group => :development
+group :development, :test do
+  gem 'annotate'
+  gem 'awesome_print'
+  gem 'rspec-rails'
+  gem 'byebug'
+  gem 'pry'
+  gem 'spring'
+end
 
-gem 'sqlite3'
-
-gem 'rspec-rails', :group => :test
+group :test do
+  gem 'its-it'
+  gem 'json-schema-rspec'
+  gem 'rspec-given'
+  gem 'webmock'
+end
 
 
 

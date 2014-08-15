@@ -1,0 +1,27 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "Session",
+    "description": "Booth agent session response, v0",
+    "type": "object",
+    "properties": {
+        "sessionKey": {
+            "type": "string"
+        },
+        "ballot": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "contestId": { "type": "string" },
+                    "ballotId": { "type": "string" },
+                    "uniquifiers": {
+                        "type": "array",
+                        "items": { "type": "string" }
+                    }
+                },
+                "required": ["contestId", "ballotId", "uniquifiers" ]
+            }
+        }
+    },
+    "required": [ "sessionKey", "ballot" ]
+}

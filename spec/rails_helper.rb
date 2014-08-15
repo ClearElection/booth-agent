@@ -3,6 +3,7 @@ ENV["RAILS_ENV"] ||= 'test'
 require 'spec_helper'
 require File.expand_path("../../config/environment", __FILE__)
 require 'rspec/rails'
+require 'clear_election/factory'
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
 # spec/support/ and its subdirectories. Files matching `spec/**/*_spec.rb` are
@@ -42,4 +43,9 @@ RSpec.configure do |config|
   config.infer_spec_type_from_file_location!
 
   config.include ResponseJson, :type => :controller
+  config.include ResponseJson, :type => :request
+
+  config.include JSON::SchemaMatchers
+  config.json_schemas[:session_schema] = Rails.root.join("schema/session.schema.json").to_s
+  config.json_schemas[:ballot_schema] = Rails.root.join("schema/ballot.schema.json").to_s
 end
