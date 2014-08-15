@@ -31,17 +31,20 @@ describe "Session API" do
         describe "with invalid access token" do
           Given { stub_request(:post, election.registrar.uri + "redeem").to_return status: 403 }
           Then { expect(response).to have_http_status 403 }
+          Then { expect(response_json["error"]).to match /token/i }
         end
       end
 
       describe "if polls haven't opened yet" do
         Given(:polls_open) { DateTime.now + 1.day }
         Then { expect(response).to have_http_status 422 }
+        Then { expect(response_json["error"]).to match /open/i }
       end
 
       describe "if polls are closed" do
         Given(:polls_close) { DateTime.now - 1.day }
         Then { expect(response).to have_http_status 422 }
+        Then { expect(response_json["error"]).to match /open/i }
       end
 
     end
@@ -49,13 +52,14 @@ describe "Session API" do
     describe "with other booth agent" do
       Given(:booth_uri) { "http://other.booth-agent.com" }
       Then { expect(response).to have_http_status 422 }
+      Then { expect(response_json["error"]).to match /booth agent/i }
     end
-
   end
 
   describe "with invalid election" do
     Given { stub_request(:get, election_uri).to_return status: 404 }
     Then { expect(response).to have_http_status 422 }
+    Then { expect(response_json["error"]).to match /uri/i }
   end
 
 end
