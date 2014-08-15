@@ -15,7 +15,7 @@ class SessionsController < ApplicationController
       return
     end
 
-    unless election.polls_are_open?
+    unless election.polls_are_now_open?
       render json: { error: "polls are not open" }, status: 422
       return
     end
