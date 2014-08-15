@@ -3,9 +3,14 @@
 # Table name: sessions
 #
 #  id           :integer          not null, primary key
-#  session_key  :string(255)      not null
-#  election_uri :string(255)      not null
-
+#  session_key  :string(255)      not null, indexed
+#  election_uri :string(255)      not null, indexed
+#
+# Indexes
+#
+#  index_sessions_on_election_uri  (election_uri)
+#  index_sessions_on_session_key   (session_key) UNIQUE
+#
 
 class Session < ActiveRecord::Base
 

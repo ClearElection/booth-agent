@@ -3,10 +3,15 @@
 # Table name: ballot_specs
 #
 #  id          :integer          not null, primary key
-#  session_id  :integer          not null
-#  contestId   :string(255)      not null
-#  ballotId    :string(255)      not null
+#  session_id  :integer          not null, indexed
+#  contestId   :string(255)      not null, indexed => [ballotId]
+#  ballotId    :string(255)      not null, indexed => [contestId]
 #  uniquifiers :text
+#
+# Indexes
+#
+#  fk__ballot_specs_session_id                   (session_id)
+#  index_ballot_specs_on_ballotId_and_contestId  (ballotId,contestId) UNIQUE
 #
 
 BALLOT_ID_CHARS = "BCDFGHJKLMNPQRSTVWXZ0123456789".split('')
