@@ -16,12 +16,12 @@ class SessionsController < ApplicationController
     end
 
     unless election.polls_are_now_open?
-      render json: { error: "polls are not open" }, status: 422
+      render json: { error: "polls are not open" }, status: 403
       return
     end
 
     response = Faraday.post(election.registrar.uri + "redeem", election_uri: election_uri, accessToken: accessToken)
-    if response.status != 200
+    if not response.success?
       render json: { error: "failed to redeem accessToken", registrarResponse: response}, status: 403
       return
     end

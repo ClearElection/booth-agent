@@ -21,10 +21,12 @@ group :development, :test do
 end
 
 group :test do
+  gem 'factory_girl_rails'
   gem 'its-it'
   gem 'json-schema-rspec'
   gem 'rspec-given'
   gem 'simplecov'
+  gem 'timecop'
   gem 'webmock'
 end
 

@@ -32,7 +32,7 @@ class BallotSpec < ActiveRecord::Base
   def new_ballotId
     while true do
       newId = 10.times.map{BALLOT_ID_CHARS.sample}.join
-      return newId if self.class.for_election(election_uri).where(contestId: self.contestId, :ballotId => newId).count == 0
+      return newId if not self.class.for_election(election_uri).where(contestId: self.contestId, :ballotId => newId).exists?
     end
   end
 

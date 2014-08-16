@@ -54,6 +54,11 @@ GEM
     diff-lcs (1.2.5)
     docile (1.1.5)
     erubis (2.7.0)
+    factory_girl (4.4.0)
+      activesupport (>= 3.0.0)
+    factory_girl_rails (4.4.1)
+      factory_girl (~> 4.4.0)
+      railties (>= 3.0.0)
     faraday (0.9.0)
       multipart-post (>= 1.2, < 3)
     given_core (3.5.4)
@@ -153,6 +158,7 @@ GEM
     thor (0.19.1)
     thread_safe (0.3.4)
     tilt (1.4.1)
+    timecop (0.7.1)
     treetop (1.4.15)
       polyglot
       polyglot (>= 0.3.1)
@@ -172,6 +178,7 @@ DEPENDENCIES
   awesome_print
   byebug
   clear_election (~> 0.0.0)!
+  factory_girl_rails
   its-it
   json-schema
   json-schema-rspec
@@ -186,4 +193,5 @@ DEPENDENCIES
   schema_validations
   simplecov
   spring
+  timecop
   webmock

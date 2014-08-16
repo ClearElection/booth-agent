@@ -10,7 +10,7 @@ describe "Session API" do
   Given(:election) { ClearElection::Factory.election(booth: booth_uri, pollsOpen: polls_open, pollsClose: polls_close) }
   Given(:accessToken) { "TestAccessToken" }
 
-  When { post "/sessions", election: election_uri, accessToken: accessToken }
+  When { post "/session", election: election_uri, accessToken: accessToken }
 
   describe "with valid election" do
     Given { stub_request(:get, election_uri).to_return body: -> request { election.as_json } }
@@ -37,13 +37,13 @@ describe "Session API" do
 
       describe "if polls haven't opened yet" do
         Given(:polls_open) { DateTime.now + 1.day }
-        Then { expect(response).to have_http_status 422 }
+        Then { expect(response).to have_http_status 403 }
         Then { expect(response_json["error"]).to match /open/i }
       end
 
       describe "if polls are closed" do
         Given(:polls_close) { DateTime.now - 1.day }
-        Then { expect(response).to have_http_status 422 }
+        Then { expect(response).to have_http_status 403 }
         Then { expect(response_json["error"]).to match /open/i }
       end
 
