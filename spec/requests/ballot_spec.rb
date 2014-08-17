@@ -7,16 +7,6 @@ describe "Ballot API" do
   Given(:ballot) { get_ballot(session) }
   Given { stub_request(:get, session.election_uri).to_return body: -> request { election.as_json } }
 
-  def get_ballot(session, invalid: nil)
-    ClearElection::Factory.ballot(session.election, identify: -> contest {
-      ballot_spec = session.get_ballot_spec(contestId: contest.contestId)
-      ballotId = ballot_spec.ballotId
-      uniquifier = ballot_spec.uniquifiers.sample
-      uniquifier = "i-am-invalid" if invalid == :uniquifier
-      [ballotId, uniquifier]
-    }, invalid: invalid)
-  end
-
   When {
     post "/ballot", sessionKey: session_key, ballot: ballot.as_json
   }

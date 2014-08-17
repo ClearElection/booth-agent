@@ -1,8 +1,7 @@
 FactoryGirl.define do
 
   factory :session, :class => Session do
-    sequence(:session_key) { |n| "Session_key_#{n}" }
-    sequence(:election_uri) { |n| "http://dummy.example.com/election/#{n}/" }
+    election_uri { ClearElection::Factory.election_uri }
     election { ClearElection::Factory.election }
   end
 end
