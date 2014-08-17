@@ -2,12 +2,19 @@ require "rails_helper"
 
 describe "Session API" do
 
-  Given!(:booth_host) { "dummy-booth.com".tap {|host| host! host } }
+  Given(:my_uri) { ClearElection::Factory.agent_uri("booth") }
+
+  # For testing pretend that requests are going to my_uri/path
+  Given {
+    host! URI(my_uri).host
+    # hack to pretend that the rails app's root is at my_uri's path
+    allow_any_instance_of(ActionDispatch::Request).to receive(:original_url) { |request| request.base_url + URI(my_uri).path + request.original_fullpath }
+  }
 
   Given(:polls_open) { DateTime.now - 1.year }
   Given(:polls_close) { DateTime.now + 1.year }
-  Given(:election_uri) { "http://dummy-election.org/electionID" }
-  Given(:election) { ClearElection::Factory.election(booth: booth_uri, pollsOpen: polls_open, pollsClose: polls_close) }
+  Given(:election_uri) { ClearElection::Factory.election_uri }
+  Given(:election) { ClearElection::Factory.election(booth: election_booth_uri, pollsOpen: polls_open, pollsClose: polls_close) }
   Given(:accessToken) { "TestAccessToken" }
 
   When { post "/session", election: election_uri, accessToken: accessToken }
@@ -16,7 +23,7 @@ describe "Session API" do
     Given { stub_request(:get, election_uri).to_return body: -> request { election.as_json } }
 
     describe "with this booth agent" do
-      Given(:booth_uri) { "http://#{booth_host}" }
+      Given(:election_booth_uri) { my_uri }
 
       describe "if polls are open" do
 
@@ -50,7 +57,7 @@ describe "Session API" do
     end
 
     describe "with other booth agent" do
-      Given(:booth_uri) { "http://other.booth-agent.com" }
+      Given(:election_booth_uri) { ClearElection::Factory.agent_uri("booth") }
       Then { expect(response).to have_http_status 422 }
       Then { expect(response_json["error"]).to match /booth agent/i }
     end
