@@ -56,4 +56,5 @@ Rails.application.routes.draw do
 
   post 'session' => 'sessions#create'
   post 'ballot' => 'ballots#create'
+  get 'returns' => 'returns#show'
 end

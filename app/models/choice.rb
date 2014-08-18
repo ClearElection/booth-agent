@@ -35,4 +35,26 @@ class Choice < ActiveRecord::Base
       end
     end
   end
+
+  BALLOT_CONTEST_FIELDS = [:contestId, :ballotId, :uniquifier]
+
+  def ballot_contest_attrs
+    Hash[BALLOT_CONTEST_FIELDS.map{|field| [field, self.send(field)]}]
+  end
+
+  def self.load_ballots(election_uri:)
+    self.where(election_uri: election_uri).to_a.group_by(&:ballot_contest_attrs).map { |attrs, choices|
+      ClearElection::Ballot.new(
+        contests: [
+          ClearElection::Ballot::Contest.new(
+            attrs.merge(
+              choices: choices.sort_by(&:rank).map{|choice|
+                ClearElection::Ballot::Choice.new(candidateId: choice.candidateId, rank: choice.rank)
+              }
+            )
+          )
+        ]
+      )
+    }
+  end
 end
