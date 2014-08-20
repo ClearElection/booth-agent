@@ -3,9 +3,10 @@ require "rails_helper"
 describe "Ballot API" do
 
   Given(:session) { FactoryGirl.create(:session) }
-  Given(:election) { session.election }
-  Given(:ballot) { get_ballot(session) }
+  Given(:election) { ClearElection::Factory.election }
   Given { stub_request(:get, session.election_uri).to_return body: -> request { election.as_json } }
+
+  Given(:ballot) { get_ballot(session) }
 
   When {
     post "/ballot", sessionKey: session_key, ballot: ballot.as_json
@@ -21,18 +22,7 @@ describe "Ballot API" do
       describe "with valid ballot" do
         Given(:ballot) { get_ballot(session) }
         Then { expect(response).to have_http_status 204 }
-        Then {
-          expect(ballot.contests.all? { |contest|
-            contest.choices.all? { |choice|
-              Choice.where(election_uri: session.election_uri,
-                           ballotId: contest.ballotId,
-                           contestId: contest.contestId,
-                           uniquifier: contest.uniquifier,
-                           candidateId: choice.candidateId,
-                           rank: choice.rank).exists?
-            }
-          }).to be_truthy
-        }
+        Then { expect(BallotRecord.where(election_uri: session.election_uri).last.ballot_json).to eq ballot.as_json }
         describe "when post again" do
           When { post "/ballot", sessionKey: session_key, ballot: get_ballot(session) }
           Then { expect(response).to have_http_status 403 }
@@ -42,7 +32,7 @@ describe "Ballot API" do
     end
 
     describe "with ballotIds from other ballot" do
-      Given(:session2) { FactoryGirl.create(:session, election: session.election, election_uri: session.election_uri) }
+      Given(:session2) { FactoryGirl.create(:session, election_uri: session.election_uri) }
       Given(:ballot) { get_ballot(session2) }
       Then { expect(response).to have_http_status 422 }
       Then { expect(response_error_message).to match /ballot id/i }

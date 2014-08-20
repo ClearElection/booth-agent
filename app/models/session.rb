@@ -2,40 +2,27 @@
 #
 # Table name: sessions
 #
-#  id           :integer          not null, primary key
-#  session_key  :string(255)      not null, indexed
-#  election_uri :string(255)      not null, indexed
-#  cast         :boolean          default(FALSE), not null
+#  id               :integer          not null, primary key
+#  session_key      :string(255)      not null, indexed
+#  election_uri     :string(255)      not null, indexed
+#  cast             :boolean          default(FALSE), not null
+#  ballot_record_id :integer          not null, indexed
 #
 # Indexes
 #
-#  index_sessions_on_election_uri  (election_uri)
-#  index_sessions_on_session_key   (session_key) UNIQUE
+#  index_sessions_on_ballot_record_id  (ballot_record_id) UNIQUE
+#  index_sessions_on_election_uri      (election_uri)
+#  index_sessions_on_session_key       (session_key) UNIQUE
 #
 
 class Session < ActiveRecord::Base
 
-  attr_writer :election
+  attr_writer :election_uri
+  delegate :election, :election_uri, to: :ballot_record
 
   before_validation on: :create do
     self.session_key ||= self.class.new_session_key
-    self.election_uri ||= @election.uri if @election
-  end
-
-  after_create :create_ballot_specs
-
-  def election
-    @election ||= ClearElection.read(election_uri)
-  end
-
-  def create_ballot_specs
-    election.contests.each do |contest|
-      BallotSpec.create!(session: self, contestId: contest.contestId)
-    end
-  end
-
-  def get_ballot_spec(contestId:)
-    self.ballot_specs.where(contestId: contestId).first
+    self.ballot_record ||= BallotRecord.create(election_uri: @election_uri)
   end
 
   def self.new_session_key
@@ -44,13 +31,5 @@ class Session < ActiveRecord::Base
       return session_key if not self.where(session_key: session_key).exists?
     end
   end
-
-  def cast!(ballot)
-    self.class.transaction do
-      Choice.create_from_ballot!(ballot, election_uri: election_uri)
-      self.update_attributes!(cast: true)
-    end
-  end
-
 
 end

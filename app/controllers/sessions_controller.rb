@@ -26,7 +26,7 @@ class SessionsController < ApplicationController
       return
     end
 
-    session = Session.create!(election: election)
+    session = Session.create!(election_uri: election_uri)
     render json: session, root: nil
   end
 end

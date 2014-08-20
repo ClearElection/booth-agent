@@ -2,9 +2,8 @@ require "rails_helper"
 
 describe "Returns API" do
 
-  Given(:election_uri) { ClearElection::Factory.election_uri }
   Given(:election) { ClearElection::Factory.election }
-  Given { stub_request(:get, election_uri).to_return body: election.as_json }
+  Given(:election_uri) { stub_election_uri(election) }
 
   Given(:nsessions) { 3 }
   Given(:ncast) { 2 }
@@ -12,14 +11,18 @@ describe "Returns API" do
 
   Given {
     nsessions.times do |i|
-      session = FactoryGirl.create(:session, election_uri: election_uri, election: election)
+      session = FactoryGirl.create(:session, election_uri: election_uri)
       if i < ncast
         ballot = get_ballot(session)
-        session.cast!(ballot)
+        session.ballot_record.ballot_json = ballot.as_json
+        session.ballot_record.cast!
         ballots << ballot
       end
     end
-    FactoryGirl.create(:session).tap { |session| session.cast!(get_ballot(session)) }
+    FactoryGirl.create(:session, election_uri: stub_election_uri).tap { |session2|
+      session2.ballot_record.ballot_json = get_ballot(session2).as_json
+      session2.ballot_record.cast!
+    }
   }
 
   When {
@@ -37,7 +40,7 @@ describe "Returns API" do
       Then { expect(response).to have_http_status 200 }
       Then { expect(response_json["ballotsIssued"]).to eq nsessions }
       Then { expect(response_json["ballotsCast"]).to eq ncast }
-      Then { expect(response_json["ballots"]).to eq ballots.flat_map(&:disassociate).sort.map(&:as_json) }
+      Then { expect(response_json["ballots"]).to eq ballots.sort.map(&:as_json) }
     end
 
     describe "if polls are not closed" do

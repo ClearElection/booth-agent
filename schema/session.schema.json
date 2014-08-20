@@ -4,23 +4,17 @@
     "description": "Booth agent session response, v0",
     "type": "object",
     "properties": {
-        "sessionKey": {
-            "type": "string"
-        },
+        "sessionKey": { "type": "string" },
         "ballot": {
-            "type": "array",
-            "items": {
-                "type": "object",
-                "properties": {
-                    "contestId": { "type": "string" },
-                    "ballotId": { "type": "string" },
-                    "uniquifiers": {
-                        "type": "array",
-                        "items": { "type": "string" }
-                    }
-                },
-                "required": ["contestId", "ballotId", "uniquifiers" ]
+          "type": "object",
+          "properties": {
+            "ballotId": { "type": "string" },
+            "uniquifiers": {
+              "type": "array",
+              "items": { "type": "string" }
             }
+          },
+          "required": ["ballotId", "uniquifiers" ]
         }
     },
     "required": [ "sessionKey", "ballot" ]

@@ -32,7 +32,6 @@ describe "Session API" do
 
           Then { expect(response).to have_http_status 200 }
           Then { expect(response_json).to match_json_schema(:session_schema) }
-          Then { expect(response_json["ballot"].map(&it["contestId"])).to match_array election.contests.map(&:contestId) }
         end
 
         describe "with invalid access token" do

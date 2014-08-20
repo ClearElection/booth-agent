@@ -2,9 +2,9 @@ class ReturnsController < ApplicationController
   def show
     election_uri = params[:election]
 
-    sessions = Session.where(election_uri: election_uri)
+    ballot_records = BallotRecord.where(election_uri: election_uri)
 
-    if !sessions.exists?
+    if !ballot_records.exists?
       render json: { error: "no returns data" }, status: 404
       return
     end
@@ -16,12 +16,10 @@ class ReturnsController < ApplicationController
       return
     end
 
-    ballots = Choice.load_ballots(election_uri: election_uri)
-
     render json: {
-      ballotsIssued: sessions.count,
-      ballotsCast: sessions.where(cast: true).count,
-      ballots: ballots.sort.map(&:as_json)
+      ballotsIssued: ballot_records.count,
+      ballotsCast: ballot_records.where(cast: true).count,
+      ballots: ballot_records.where(cast: true).order(:ballotId).pluck(:ballot_json)
     }, status: 200
 
   end
