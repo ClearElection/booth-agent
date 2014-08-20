@@ -20,9 +20,9 @@ class SessionsController < ApplicationController
       return
     end
 
-    response = Faraday.post(election.registrar.uri + "redeem", election_uri: election_uri, accessToken: accessToken)
+    response = Faraday.post(election.signin.uri + "redeem", election_uri: election_uri, accessToken: accessToken)
     if not response.success?
-      render json: { error: "failed to redeem accessToken", registrarResponse: response}, status: 403
+      render json: { error: "failed to redeem accessToken", signinResponse: response}, status: 403
       return
     end
 

@@ -28,7 +28,7 @@ describe "Session API" do
       describe "if polls are open" do
 
         describe "with valid access token" do
-          Given { stub_request(:post, election.registrar.uri + "redeem") }
+          Given { stub_request(:post, election.signin.uri + "redeem") }
 
           Then { expect(response).to have_http_status 200 }
           Then { expect(response_json).to match_json_schema(:session_schema) }
@@ -36,7 +36,7 @@ describe "Session API" do
         end
 
         describe "with invalid access token" do
-          Given { stub_request(:post, election.registrar.uri + "redeem").to_return status: 403 }
+          Given { stub_request(:post, election.signin.uri + "redeem").to_return status: 403 }
           Then { expect(response).to have_http_status 403 }
           Then { expect(response_json["error"]).to match /token/i }
         end
