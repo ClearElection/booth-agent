@@ -61,8 +61,10 @@ class BallotRecord < ActiveRecord::Base
     end
   end
 
-  def cast!
-    self.update_attributes!(cast: true)
+  def cast_ballot(ballot_json)
+    self.ballot_json = ballot_json.as_json
+    self.cast = true
+    self.save
   end
 
 

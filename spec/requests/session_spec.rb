@@ -2,15 +2,6 @@ require "rails_helper"
 
 describe "Session API" do
 
-  Given(:my_uri) { ClearElection::Factory.agent_uri("booth") }
-
-  # For testing pretend that requests are going to my_uri/path
-  Given {
-    host! URI(my_uri).host
-    # hack to pretend that the rails app's root is at my_uri's path
-    allow_any_instance_of(ActionDispatch::Request).to receive(:original_url) { |request| request.base_url + URI(my_uri).path + request.original_fullpath }
-  }
-
   Given(:polls_open) { DateTime.now - 1.year }
   Given(:polls_close) { DateTime.now + 1.year }
   Given(:election_uri) { ClearElection::Factory.election_uri }

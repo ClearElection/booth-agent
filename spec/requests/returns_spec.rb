@@ -2,7 +2,7 @@ require "rails_helper"
 
 describe "Returns API" do
 
-  Given(:election) { ClearElection::Factory.election }
+  Given(:election) { ClearElection::Factory.election(booth: my_uri) }
   Given(:election_uri) { stub_election_uri(election) }
 
   Given(:nsessions) { 3 }
@@ -14,14 +14,12 @@ describe "Returns API" do
       session = FactoryGirl.create(:session, election_uri: election_uri)
       if i < ncast
         ballot = get_ballot(session)
-        session.ballot_record.ballot_json = ballot.as_json
-        session.ballot_record.cast!
+        session.ballot_record.cast_ballot(ballot.as_json)
         ballots << ballot
       end
     end
     FactoryGirl.create(:session, election_uri: stub_election_uri).tap { |session2|
-      session2.ballot_record.ballot_json = get_ballot(session2).as_json
-      session2.ballot_record.cast!
+      session2.ballot_record.cast_ballot(get_ballot(session2).as_json)
     }
   }
 
@@ -51,7 +49,7 @@ describe "Returns API" do
   end
 
   describe "if not a known election" do
-    Given(:requested_election) { ClearElection::Factory.election_uri }
-    Then { expect(response).to have_http_status 404 }
+    Given(:requested_election) { stub_election_uri }
+    Then { expect(response).to have_http_status 403 }
   end
 end

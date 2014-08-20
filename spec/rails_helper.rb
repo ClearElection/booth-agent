@@ -54,4 +54,9 @@ RSpec.configure do |config|
   config.json_schemas[:ballot_schema] = Rails.root.join("schema/ballot.schema.json").to_s
 
   config.include ElectionHelpers
+
+  config.before(:each) do
+    my_uri_hack
+  end
+
 end

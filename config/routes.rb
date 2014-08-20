@@ -54,7 +54,7 @@ Rails.application.routes.draw do
   #     resources :products
   #   end
 
-  post 'session' => 'sessions#create'
-  post 'ballot' => 'ballots#create'
-  get 'returns' => 'returns#show'
+  post 'session' => 'application#session'
+  post 'cast' => 'application#cast'
+  get 'returns' => 'application#returns'
 end

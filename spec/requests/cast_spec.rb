@@ -1,15 +1,15 @@
 require "rails_helper"
 
-describe "Ballot API" do
+describe "Cast API" do
 
   Given(:session) { FactoryGirl.create(:session) }
-  Given(:election) { ClearElection::Factory.election }
+  Given(:election) { ClearElection::Factory.election(booth: my_uri) }
   Given { stub_request(:get, session.election_uri).to_return body: -> request { election.as_json } }
 
   Given(:ballot) { get_ballot(session) }
 
   When {
-    post "/ballot", sessionKey: session_key, ballot: ballot.as_json
+    post "/cast", sessionKey: session_key, ballot: ballot.as_json
   }
 
   describe "with valid session key" do
@@ -23,8 +23,8 @@ describe "Ballot API" do
         Given(:ballot) { get_ballot(session) }
         Then { expect(response).to have_http_status 204 }
         Then { expect(BallotRecord.where(election_uri: session.election_uri).last.ballot_json).to eq ballot.as_json }
-        describe "when post again" do
-          When { post "/ballot", sessionKey: session_key, ballot: get_ballot(session) }
+        describe "when cast again" do
+          When { post "/cast", sessionKey: session_key, ballot: get_ballot(session) }
           Then { expect(response).to have_http_status 403 }
           Then { expect(response_error_message).to match /cast/i }
         end
