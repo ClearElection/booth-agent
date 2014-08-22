@@ -4,6 +4,7 @@ require 'spec_helper'
 require File.expand_path("../../config/environment", __FILE__)
 require 'rspec/rails'
 require 'clear_election/factory'
+require 'clear_election/rspec'
 require "simplecov"
 
 SimpleCov.start "rails"
@@ -21,6 +22,8 @@ Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
 # Checks for pending migrations before tests are run.
 # If you are not using ActiveRecord, you can remove this line.
 ActiveRecord::Migration.maintain_test_schema!
+
+ClearElection::Rspec.setup agent: true
 
 RSpec.configure do |config|
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
@@ -53,10 +56,6 @@ RSpec.configure do |config|
   config.json_schemas[:session_schema] = Rails.root.join("schema/session.schema.json").to_s
   config.json_schemas[:ballot_schema] = Rails.root.join("schema/ballot.schema.json").to_s
 
-  config.include ElectionHelpers
-
-  config.before(:each) do
-    my_uri_hack
-  end
+  config.include BoothHelpers
 
 end

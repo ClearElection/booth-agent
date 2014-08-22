@@ -2,19 +2,19 @@ require "rails_helper"
 
 describe "Session API" do
 
-  Given(:polls_open) { DateTime.now - 1.year }
-  Given(:polls_close) { DateTime.now + 1.year }
-  Given(:election_uri) { ClearElection::Factory.election_uri }
-  Given(:election) { ClearElection::Factory.election(booth: election_booth_uri, pollsOpen: polls_open, pollsClose: polls_close) }
   Given(:accessToken) { "TestAccessToken" }
 
   When { post "/session", election: election_uri, accessToken: accessToken }
 
   describe "with valid election" do
-    Given { stub_request(:get, election_uri).to_return body: -> request { election.as_json } }
+
+    Given(:polls_open) { DateTime.now - 1.year }
+    Given(:polls_close) { DateTime.now + 1.year }
+    Given(:election) { ClearElection::Factory.election(booth: election_booth_uri, pollsOpen: polls_open, pollsClose: polls_close) }
+    Given(:election_uri) { stub_election_uri(election: election) }
 
     describe "with this booth agent" do
-      Given(:election_booth_uri) { my_uri }
+      Given(:election_booth_uri) { my_agent_uri }
 
       describe "if polls are open" do
 
@@ -54,6 +54,7 @@ describe "Session API" do
   end
 
   describe "with invalid election" do
+    Given(:election_uri) { ClearElection::Factory.election_uri }
     Given { stub_request(:get, election_uri).to_return status: 404 }
     Then { expect(response).to have_http_status 422 }
     Then { expect(response_json["error"]).to match /uri/i }
