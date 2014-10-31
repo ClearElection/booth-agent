@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'clear_election', "~> 0.0.0", path: "../../lib/clear_election"
+gem 'clear_election', "~> 0.0.0", path: "../../sdk/clear_election"
 
 gem 'active_model_serializers', "~> 0.8.0"
 gem 'json-schema'

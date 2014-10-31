@@ -1,5 +1,5 @@
 PATH
-  remote: ../../lib/clear_election
+  remote: ../../sdk/clear_election
   specs:
     clear_election (0.0.1)
       faraday
