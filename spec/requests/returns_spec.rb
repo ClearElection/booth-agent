@@ -1,39 +1,34 @@
 require "rails_helper"
 
 describe "Returns API" do
+  Given(:validElection) { ClearElection::Factory.election(booth: my_agent_uri, pollsClose: 1.day.ago) }
+  Given(:validElectionUri) { stub_election_uri(election: validElection) }
 
-  Given(:election) { ClearElection::Factory.election(booth: my_agent_uri) }
-  Given(:election_uri) { stub_election_uri(election: election) }
+  Given(:otherAgentElectionUri) { stub_election_uri() }
+  Given(:invalidElectionUri) { stub_election_uri(valid: false) }
 
-  Given(:nsessions) { 3 }
-  Given(:ncast) { 2 }
-  Given(:ballots) { [] }
+  When { get "/returns", election: election_uri }
 
-  Given {
-    nsessions.times do |i|
-      session = FactoryGirl.create(:session, election_uri: election_uri)
-      if i < ncast
-        ballot = filled_ballot(session)
-        session.ballot_record.cast_ballot(ballot.as_json)
-        ballots << ballot
-      end
-    end
-    FactoryGirl.create(:session, election_uri: stub_election_uri(booth: my_agent_uri)).tap { |session2|
-      session2.ballot_record.cast_ballot(filled_ballot(session2).as_json)
-    }
-  }
+  describe "with valid election" do
+    Given(:election_uri) { validElectionUri }
 
-  When {
-    get "/returns", election: requested_election
-  }
-
-  describe "if known election" do
-    after(:each) { Timecop.return }
-
-    Given(:requested_election) { election_uri }
-
-    describe "if polls are closed" do
-      Given { Timecop.travel(election.pollsClose + 1.day) }
+    describe "with data" do
+      Given(:nsessions) { 3 }
+      Given(:ncast) { 2 }
+      Given(:ballots) { [] }
+      Given {
+        nsessions.times do |i|
+          session = FactoryGirl.create(:session, election_uri: election_uri)
+          if i < ncast
+            ballot = filled_ballot(session)
+            session.ballot_record.cast_ballot(ballot.as_json)
+            ballots << ballot
+          end
+        end
+        FactoryGirl.create(:session, election_uri: stub_election_uri(booth: my_agent_uri)).tap { |session2|
+          session2.ballot_record.cast_ballot(filled_ballot(session2).as_json)
+        }
+      }
 
       Then { expect(response).to have_http_status 200 }
       Then { expect(response_json["ballotsIssued"]).to eq nsessions }
@@ -42,14 +37,25 @@ describe "Returns API" do
     end
 
     describe "if polls are not closed" do
-      Given { Timecop.travel(election.pollsClose - 1.day) }
+      Given{ Timecop.travel(validElection.pollsClose - 1.day) }
       Then { expect(response).to have_http_status 403 }
       Then { expect(response_error_message).to match /closed/i }
     end
+
   end
 
-  describe "if not a known election" do
-    Given(:requested_election) { stub_election_uri(booth: my_agent_uri) }
-    Then { expect(response).to have_http_status 403 }
+  describe "with invalid election" do
+
+    describe "other booth agent" do
+      Given(:election_uri) { otherAgentElectionUri }
+      Then { expect(response).to have_http_status 422 }
+      Then { expect(response_json["error"]).to match /booth agent/i }
+    end
+
+    describe "invalid uri" do
+      Given(:election_uri) { invalidElectionUri }
+      Then { expect(response).to have_http_status 422 }
+      Then { expect(response_json["error"]).to match /uri/i }
+    end
   end
 end

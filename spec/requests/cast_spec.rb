@@ -1,33 +1,25 @@
 require "rails_helper"
 
 describe "Cast API" do
-
   Given(:election) { ClearElection::Factory.election(booth: my_agent_uri) }
   Given(:election_uri) { stub_election_uri(election: election) }
   Given(:session) { FactoryGirl.create(:session, election_uri: election_uri) }
 
   Given(:ballot) { filled_ballot(session) }
 
-  When {
-    post "/cast", sessionKey: session_key, ballot: ballot.as_json
-  }
+  When { post "/cast", sessionKey: session_key, ballot: ballot.as_json }
 
   describe "with valid session key" do
     Given(:session_key) { session.session_key }
 
-    after(:each) { Timecop.return }
-
-    describe "if polls are open" do
-      Given { Timecop.travel(election.pollsOpen + 0.5*(election.pollsClose-election.pollsOpen)) }
-      describe "with valid ballot" do
-        Given(:ballot) { filled_ballot(session) }
-        Then { expect(response).to have_http_status 204 }
-        Then { expect(BallotRecord.where(election_uri: session.election_uri).last.ballot_json).to eq ballot.as_json }
-        describe "when cast again" do
-          When { post "/cast", sessionKey: session_key, ballot: filled_ballot(session) }
-          Then { expect(response).to have_http_status 403 }
-          Then { expect(response_error_message).to match /cast/i }
-        end
+    describe "with valid ballot" do
+      Given(:ballot) { filled_ballot(session) }
+      Then { expect(response).to have_http_status 204 }
+      Then { expect(BallotRecord.where(election_uri: session.election_uri).last.ballot_json).to eq ballot.as_json }
+      describe "when cast again" do
+        When { post "/cast", sessionKey: session_key, ballot: filled_ballot(session) }
+        Then { expect(response).to have_http_status 403 }
+        Then { expect(response_error_message).to match /cast/i }
       end
     end
 
