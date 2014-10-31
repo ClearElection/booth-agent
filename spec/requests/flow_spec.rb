@@ -5,7 +5,7 @@ describe "Flow" do
   let(:nAccess) { 5 }
   let(:nCast) { 3 }
 
-  it "creates sessions, casts ballots, and has corret returns data for multiple elections" do
+  it "creates sessions, casts ballots, and has correct returns data for multiple elections" do
 
     nElections.times do
       election = ClearElection::Factory.election booth: my_agent_uri
