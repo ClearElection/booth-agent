@@ -6,8 +6,8 @@ describe "Session API" do
   Given(:otherAgentElectionUri) { stub_election_uri() }
   Given(:invalidElectionUri) { stub_election_uri(valid: false) }
 
-  Given(:validAccessToken) { stub_access_token(election_uri: validElectionUri) }
-  Given(:invalidAccessToken) { stub_access_token(election_uri: validElectionUri, valid: false) }
+  Given(:validAccessToken) { stub_election_access_token(election_uri: validElectionUri) }
+  Given(:invalidAccessToken) { stub_election_access_token(election_uri: validElectionUri, valid: false) }
 
   When { post "/session", election: election_uri, accessToken: accessToken }
 

@@ -11,7 +11,7 @@ describe "Flow" do
       election = ClearElection::Factory.election booth: my_agent_uri
       electionUri = stub_election_uri election: election
 
-      accessTokens = nAccess.times.map { stub_access_token(election_uri: electionUri) }
+      accessTokens = nAccess.times.map { stub_election_access_token(election_uri: electionUri) }
 
       sessions = accessTokens.each_with_index.map { |accessToken, i|
         post "/session", election: electionUri, accessToken: accessToken
