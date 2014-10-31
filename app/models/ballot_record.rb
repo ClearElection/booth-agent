@@ -2,12 +2,13 @@
 #
 # Table name: ballot_records
 #
-#  id                :integer          not null, primary key
-#  election_uri      :string(255)      not null, indexed => [ballotId], indexed
 #  ballotId          :string(255)      not null, indexed => [election_uri]
-#  valid_uniquifiers :text             not null
 #  ballot_json       :text
 #  cast              :boolean          default(FALSE), not null, indexed
+#  demographic       :text
+#  election_uri      :string(255)      not null, indexed => [ballotId], indexed
+#  id                :integer          not null, primary key
+#  valid_uniquifiers :text             not null
 #
 # Indexes
 #
@@ -22,6 +23,7 @@ UNIQUIFIER_CHARS = "bcdfghjkmnpqrstvwxz0123456789".split('')
 class BallotRecord < ActiveRecord::Base
   serialize :valid_uniquifiers, JSON
   serialize :ballot_json, JSON
+  serialize :demographic, JSON
 
   before_validation on: :create do
     self.ballotId ||= new_ballotId

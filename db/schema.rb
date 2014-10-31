@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140820084911) do
+ActiveRecord::Schema.define(version: 20141031103646) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -22,6 +22,7 @@ ActiveRecord::Schema.define(version: 20140820084911) do
     t.text    "valid_uniquifiers",                 null: false
     t.text    "ballot_json"
     t.boolean "cast",              default: false, null: false
+    t.text    "demographic"
     t.index ["ballotId", "election_uri"], :name => "index_ballot_records_on_ballotId_and_election_uri", :unique => true
     t.index ["cast"], :name => "index_ballot_records_on_cast"
     t.index ["election_uri"], :name => "index_ballot_records_on_election_uri"

@@ -25,9 +25,6 @@ describe "Returns API" do
             ballots << ballot
           end
         end
-        FactoryGirl.create(:session, election_uri: stub_election_uri(booth: my_agent_uri)).tap { |session2|
-          session2.ballot_record.cast_ballot(filled_ballot(session2).as_json)
-        }
       }
 
       Then { expect(response).to have_http_status 200 }

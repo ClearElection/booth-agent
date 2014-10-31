@@ -14,7 +14,7 @@ class ApplicationController < ActionController::API
       return
     end
 
-    session = Session.create!(election_uri: election_uri)
+    session = Session.create!(election_uri: election_uri, demographic: response.body[:demographic])
     render json: session, root: nil
   end
 
@@ -52,7 +52,7 @@ class ApplicationController < ActionController::API
     render json: {
       ballotsIssued: ballot_records.count,
       ballotsCast: ballot_records.where(cast: true).count,
-      ballots: ballot_records.where(cast: true).order(:ballotId).pluck(:ballot_json)
+      ballots: ballot_records.where(cast: true).order(:ballotId).pluck(:ballot_json, :demographic).map{|ballot_json, demographic| demographic ? ballot_json.merge(demographic: demographic) : ballot_json}
     }, status: 200
 
   end
