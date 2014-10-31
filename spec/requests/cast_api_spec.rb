@@ -15,7 +15,6 @@ describe "Cast API" do
     describe "with valid ballot" do
       Given(:ballot) { filled_ballot(session) }
       Then { expect(response).to have_http_status 204 }
-      Then { expect(BallotRecord.where(election_uri: session.election_uri).last.ballot_json).to eq ballot.as_json }
       describe "when cast again" do
         When { post "/cast", sessionKey: session_key, ballot: filled_ballot(session) }
         Then { expect(response).to have_http_status 403 }
