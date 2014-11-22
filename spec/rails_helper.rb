@@ -3,8 +3,8 @@ ENV["RAILS_ENV"] ||= 'test'
 require 'spec_helper'
 require File.expand_path("../../config/environment", __FILE__)
 require 'rspec/rails'
-require 'clear_election/factory'
-require 'clear_election/rspec'
+require 'clear-election-sdk/factory'
+require 'clear-election-sdk/rspec'
 require "simplecov"
 
 SimpleCov.start "rails"

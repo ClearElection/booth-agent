@@ -1,7 +1,7 @@
 PATH
-  remote: ../../sdk/clear_election
+  remote: ../clear-election-sdk
   specs:
-    clear_election (0.0.1)
+    clear-election-sdk (0.0.1)
       faraday
       json-schema
 
@@ -177,7 +177,7 @@ DEPENDENCIES
   annotate
   awesome_print
   byebug
-  clear_election (~> 0.0.0)!
+  clear-election-sdk (~> 0.0.0)!
   factory_girl_rails
   its-it
   json-schema
