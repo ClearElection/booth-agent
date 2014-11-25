@@ -1,6 +1,6 @@
 require "rails_helper"
 
-describe "Flow" do
+describe "Function" do
   let(:nElections) { 3 }
   let(:nAccess) { 10 }
   let(:nCast) { 8 }
