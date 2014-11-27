@@ -8,7 +8,7 @@ class ApplicationController < ActionController::API
 
     return unless check_election(election, now: :open)
 
-    response = Faraday.post(election.signin.uri + "redeem", election_uri: election_uri, accessToken: accessToken)
+    response = Faraday.post(election.signin.uri + "redeem", election: election_uri, accessToken: accessToken)
     if not response.success?
       render json: { error: "failed to redeem accessToken", signinResponse: response}, status: 403
       return
