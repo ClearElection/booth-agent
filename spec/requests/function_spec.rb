@@ -5,11 +5,14 @@ describe "Function" do
   let(:nAccess) { 10 }
   let(:nCast) { 8 }
 
+  let (:electionUris) { nElections.times.map { stub_election_uri booth: my_agent_uri } }
+
   it "creates sessions, casts ballots, and has correct returns data for multiple elections" do
 
-    nElections.times do
-      election = ClearElection::Factory.election booth: my_agent_uri
-      electionUri = stub_election_uri election: election
+    ballots = {}
+
+    electionUris.each do |electionUri|
+      election = ClearElection.read(electionUri)
 
       accessTokens = nAccess.times.map { |i| stub_election_access_token election_uri: electionUri, demographic: {"parity" => i.even? ? "even" : "odd" } }
 
@@ -22,20 +25,23 @@ describe "Function" do
         [sessionKey, ballotId, uniquifiers]
       }
 
-      ballots = sessions.take(nCast).map { |sessionKey, ballotId, uniquifiers|
+      ballots[electionUri] = sessions.take(nCast).map { |sessionKey, ballotId, uniquifiers|
         ballot = ClearElection::Factory.ballot election, ballotId: ballotId, uniquifier: uniquifiers.sample
         post "/cast", sessionKey: sessionKey, ballot: ballot.as_json
         expect(response).to have_http_status 204
         ballot
       }
+    end
 
+    electionUris.each do |electionUri|
+      election = ClearElection.read(electionUri)
       Timecop.travel(election.pollsClose + 1.day) do
         get "/returns", election: electionUri
         expect(response).to have_http_status 200
         expect(response_json["ballotsIssued"]).to eq nAccess
         expect(response_json["ballotsCast"]).to eq nCast
         returns = response_json["ballots"]
-        expect(returns.map{ |json| json.except("demographic") }).to eq ballots.sort.map(&:as_json)
+        expect(returns.map{ |json| json.except("demographic") }).to eq ballots[electionUri].sort.map(&:as_json)
         grouped = returns.group_by{|json| json["demographic"]["parity"]}
         expect(grouped.size).to eq 2
         expect(grouped["even"].size).to eq nCast/2
