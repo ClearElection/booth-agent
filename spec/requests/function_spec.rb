@@ -9,14 +9,12 @@ describe "Function" do
 
   it "creates sessions, casts ballots, and has correct returns data for multiple elections" do
 
+    sessions = {}
     ballots = {}
 
     electionUris.each do |electionUri|
-      election = ClearElection.read(electionUri)
-
       accessTokens = nAccess.times.map { |i| stub_election_access_token election_uri: electionUri, demographic: {"parity" => i.even? ? "even" : "odd" } }
-
-      sessions = accessTokens.each_with_index.map { |accessToken, i|
+      sessions[electionUri] = accessTokens.each_with_index.map { |accessToken, i|
         post "/session", election: electionUri, accessToken: accessToken
         expect(response).to have_http_status 200
         sessionKey = response_json["sessionKey"]
@@ -24,8 +22,11 @@ describe "Function" do
         uniquifiers = response_json["ballot"]["uniquifiers"]
         [sessionKey, ballotId, uniquifiers]
       }
+    end
 
-      ballots[electionUri] = sessions.take(nCast).map { |sessionKey, ballotId, uniquifiers|
+    electionUris.each do |electionUri|
+      election = ClearElection.read(electionUri)
+      ballots[electionUri] = sessions[electionUri].take(nCast).map { |sessionKey, ballotId, uniquifiers|
         ballot = ClearElection::Factory.ballot election, ballotId: ballotId, uniquifier: uniquifiers.sample
         post "/cast", sessionKey: sessionKey, ballot: ballot.as_json
         expect(response).to have_http_status 204
