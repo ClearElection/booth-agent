@@ -9,5 +9,9 @@ module BoothHelpers
     )
   end
 
+  def json_request(method, name, args)
+    args = args.to_json if method == :post
+    send method, name, args, { 'Content-Type' => 'application/json' }
+  end
 
 end

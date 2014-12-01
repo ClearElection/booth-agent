@@ -39,7 +39,7 @@ class ApplicationController < ActionController::API
       return
     end
 
-    render json: {}, status: 204
+    render nothing: true, status: 204
   end
 
   # get the returns data
@@ -86,7 +86,5 @@ class ApplicationController < ActionController::API
 
     return true
   end
-
-
 
 end

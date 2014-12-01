@@ -1,0 +1,141 @@
+{
+  "definitions": {
+    "ballot": {
+      "$schema": "http://json-schema.org/draft-04/schema#",
+      "title": "Ballot",
+      "description": "ClearElection Ballot definition, v0.0",
+      "type": "object",
+      "properties": {
+        "version": { "enum": ["0.0"] },
+        "ballotId": { "type": "string" },
+        "uniquifier": { "type": "string" },
+        "contests": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "contestId": { "type": "string" },
+              "choices": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "candidateId": { "type": "string" }
+                  },
+                  "required": ["candidateId"]
+                }
+              }
+            },
+            "required": ["contestId", "choices"]
+          }
+        },
+        "demographic": { "type": "object" }
+      },
+      "required": ["version", "ballotId", "uniquifier", "contests"]
+    },
+    "session-request": {
+      "$schema": "http://json-schema.org/draft-04/schema#",
+      "title": "BoothSessionRequest",
+      "description": "Booth agent session request, v0",
+      "type": "object",
+      "properties": {
+        "election": { "type": "string", "format": "uri" },
+        "accessToken": { "type": "string" }
+      },
+      "required": [ "election", "accessToken" ]
+    },
+    "session-response": {
+      "$schema": "http://json-schema.org/draft-04/schema#",
+      "title": "BoothSessionResponse",
+      "description": "Booth agent session response, v0",
+      "type": "object",
+      "properties": {
+        "sessionKey": { "type": "string" },
+        "ballot": {
+          "type": "object",
+          "properties": {
+            "ballotId": { "type": "string" },
+            "uniquifiers": {
+              "type": "array",
+              "items": { "type": "string" }
+            }
+          },
+          "required": ["ballotId", "uniquifiers" ]
+        }
+      },
+      "required": [ "sessionKey", "ballot" ]
+    },
+    "cast-request": {
+      "$schema": "http://json-schema.org/draft-04/schema#",
+      "title": "BoothCastRequest",
+      "description": "Booth agent cast request, v0",
+      "type": "object",
+      "properties": {
+        "sessionKey": { "type": "string" },
+        "ballot": { "$ref": "#/definitions/ballot" }
+      },
+      "required": [ "sessionKey", "ballot" ]
+    },
+    "cast-response": {
+      "$schema": "http://json-schema.org/draft-04/schema#",
+      "title": "BoothCastResponse",
+      "description": "Booth agent cast response, v0",
+      "type": "null"
+    },
+    "returns-request": {
+      "$schema": "http://json-schema.org/draft-04/schema#",
+      "title": "BoothReturnsRequest",
+      "description": "Booth agent returns request, v0",
+      "type": "object",
+      "properties": {
+        "election": { "type": "string", "format": "uri" }
+      },
+      "required": [ "election" ]
+    },
+    "returns-response": {
+      "$schema": "http://json-schema.org/draft-04/schema#",
+      "title": "BoothReturnsResponse",
+      "description": "Booth agent returns response, v0",
+      "type": "object",
+      "properties": {
+        "ballotsIssued": { "type": "integer" },
+        "ballotsCast": { "type": "integer" },
+        "ballots": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/ballot" }
+        }
+      },
+      "required": [ "ballotsIssued", "ballotsCast", "ballots" ]
+    }
+  },
+
+  "links": [
+    {
+      "description": "Start a session",
+      "href": "/session",
+      "method": "POST",
+      "rel": "create",
+      "title": "Session",
+      "schema": { "$ref": "#/definitions/session-request" },
+      "targetSchema": { "$ref": "#/definitions/session-response" }
+    },
+    {
+      "description": "Cast a ballot",
+      "href": "/cast",
+      "method": "POST",
+      "rel": "create",
+      "title": "Cast",
+      "schema": { "$ref": "#/definitions/cast-request" },
+      "targetSchema": { "$ref": "#/definitions/cast-response" }
+    },
+    {
+      "description": "Get returns",
+      "href": "/returns",
+      "method": "GET",
+      "rel": "list",
+      "title": "Cast",
+      "schema": { "$ref": "#/definitions/returns-request" },
+      "targetSchema": { "$ref": "#/definitions/returns-response" }
+    }
+  ]
+}

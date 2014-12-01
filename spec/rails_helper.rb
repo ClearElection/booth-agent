@@ -52,14 +52,6 @@ RSpec.configure do |config|
   config.include ResponseJson, :type => :controller
   config.include ResponseJson, :type => :request
 
-  config.include JSON::SchemaMatchers
-  config.json_schemas[:session_schema] = Rails.root.join("schema/session.schema.json").to_s
-  config.json_schemas[:ballot_schema] = Rails.root.join("schema/ballot.schema.json").to_s
-
   config.include BoothHelpers
-
-  config.after(:each) do
-    Timecop.return
-  end
 
 end

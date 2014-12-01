@@ -19,5 +19,10 @@ module Booth
     # The default locale is :en and all translations from config/locales/*.rb,yml are auto loaded.
     # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
     # config.i18n.default_locale = :de
+
+    api_schema = JSON.parse(Rails.root.join("schema/api.schema.json").read())
+    config.middleware.insert_after ActionDispatch::Static, "CatchMiddlewareErrors"
+    config.middleware.use Committee::Middleware::RequestValidation, schema: api_schema, raise: true, strict: true
+    config.middleware.use Committee::Middleware::ResponseValidation, schema: api_schema, raise: true
   end
 end

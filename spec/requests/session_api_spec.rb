@@ -3,7 +3,7 @@ require "rails_helper"
 describe "Session API" do
 
   def post_session(election_uri, access_token:)
-    post "session", election: election_uri, accessToken: access_token
+    json_request :post, "/session", election: election_uri, accessToken: access_token
   end
 
   it_behaves_like "api that validates election URI", agent: :booth, state: :open do
@@ -18,7 +18,6 @@ describe "Session API" do
     it "accepts valid access token" do
       post_session election_uri, access_token: valid_access_token
       expect(response).to have_http_status 200
-      expect(response_json).to match_json_schema(:session_schema)
     end
 
     it "rejects invalid access token" do

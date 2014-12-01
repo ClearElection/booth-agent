@@ -3,7 +3,7 @@ require "rails_helper"
 describe "Cast API" do
 
   def post_cast(session_key, ballot)
-    post "/cast", sessionKey: session_key, ballot: ballot.as_json
+    json_request :post, "/cast", sessionKey: session_key, ballot: ballot.as_json
   end
 
   let(:election_uri) { stub_election_uri(booth: my_agent_uri) }
@@ -49,7 +49,7 @@ describe "Cast API" do
 
     it "rejects invalid ballot json" do
       post_cast valid_session_key, {this: { is: :wrong }}
-      expect(response).to have_http_status 422
+      expect(response).to have_http_status 400
       expect(response_error_message).to match /schema/i
     end
 

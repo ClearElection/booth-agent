@@ -15,7 +15,7 @@ describe "Function" do
     electionUris.each do |electionUri|
       accessTokens = nAccess.times.map { |i| stub_election_access_token election_uri: electionUri, demographic: {"parity" => i.even? ? "even" : "odd" } }
       sessions[electionUri] = accessTokens.each_with_index.map { |accessToken, i|
-        post "/session", election: electionUri, accessToken: accessToken
+        json_request :post, "/session", election: electionUri, accessToken: accessToken
         expect(response).to have_http_status 200
         sessionKey = response_json["sessionKey"]
         ballotId = response_json["ballot"]["ballotId"]
@@ -28,7 +28,7 @@ describe "Function" do
       election = ClearElection.read(electionUri)
       ballots[electionUri] = sessions[electionUri].take(nCast).map { |sessionKey, ballotId, uniquifiers|
         ballot = ClearElection::Factory.ballot election, ballotId: ballotId, uniquifier: uniquifiers.sample
-        post "/cast", sessionKey: sessionKey, ballot: ballot.as_json
+        json_request :post, "/cast", sessionKey: sessionKey, ballot: ballot.as_json
         expect(response).to have_http_status 204
         ballot
       }
@@ -37,7 +37,7 @@ describe "Function" do
     electionUris.each do |electionUri|
       election = ClearElection.read(electionUri)
       Timecop.travel(election.pollsClose + 1.day) do
-        get "/returns", election: electionUri
+        json_request :get, "/returns", election: electionUri
         expect(response).to have_http_status 200
         expect(response_json["ballotsIssued"]).to eq nAccess
         expect(response_json["ballotsCast"]).to eq nCast
