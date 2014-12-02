@@ -20,26 +20,8 @@ module Booth
     # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
     # config.i18n.default_locale = :de
 
-    def self.expand_refs(json)
-      json.tap {
-        JSON.recurse_proc json do |item|
-          if Hash === item and uri = item['$ref']
-            uri = URI.parse(uri)
-            source = case uri.scheme
-                    when nil then nil
-                    when 'file' then Rails.root.join uri.path.sub(%r{^/}, '')
-                    else uri
-                    end
-            if source
-              item.delete '$ref'
-              item.merge! expand_refs JSON.parse source.read
-            end
-          end
-        end
-      }
-    end
-
-    api_schema = expand_refs JSON.parse Rails.root.join("schema/api.schema.json").read()
+    require "json/expand_refs" # in lib
+    api_schema = JSON.expand_refs! JSON.parse Rails.root.join("schema/api.schema.json").read()
 
     config.middleware.insert_after ActionDispatch::Static, "CatchMiddlewareErrors"
     config.middleware.use Committee::Middleware::RequestValidation, schema: api_schema, raise: true, strict: true
