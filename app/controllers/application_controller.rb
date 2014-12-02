@@ -14,7 +14,7 @@ class ApplicationController < ActionController::API
       return
     end
 
-    session = Session.create!(election_uri: election_uri, demographic: response.body[:demographic])
+    session = Session.create!(election_uri: election_uri, demographic: JSON.parse(response.body)['demographic'])
     render json: session, root: nil
   end
 
