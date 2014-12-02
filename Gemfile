@@ -3,7 +3,7 @@ source 'https://rubygems.org'
 gem 'clear-election-sdk', "~> 0.0.0", path: "../clear-election-sdk"
 
 gem 'active_model_serializers', "~> 0.8.0"
-gem 'committee', git: "git@github.com:ronen/committee.git", branch: "patch-1"
+gem 'committee'
 gem 'pg'
 gem 'rails', '4.1.4'
 gem 'rails-api'
