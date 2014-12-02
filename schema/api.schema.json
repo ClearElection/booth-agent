@@ -1,38 +1,6 @@
 {
   "definitions": {
-    "ballot": {
-      "$schema": "http://json-schema.org/draft-04/schema#",
-      "title": "Ballot",
-      "description": "ClearElection Ballot definition, v0.0",
-      "type": "object",
-      "properties": {
-        "version": { "enum": ["0.0"] },
-        "ballotId": { "type": "string" },
-        "uniquifier": { "type": "string" },
-        "contests": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "contestId": { "type": "string" },
-              "choices": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "candidateId": { "type": "string" }
-                  },
-                  "required": ["candidateId"]
-                }
-              }
-            },
-            "required": ["contestId", "choices"]
-          }
-        },
-        "demographic": { "type": "object" }
-      },
-      "required": ["version", "ballotId", "uniquifier", "contests"]
-    },
+    "ballot": { "$ref": "file:/../clear-election-sdk/schema/ballot.schema-0.0.json" },
     "session-request": {
       "$schema": "http://json-schema.org/draft-04/schema#",
       "title": "BoothSessionRequest",
