@@ -2,9 +2,6 @@
   "definitions": {
     "ballot": { "$ref": "file:/../clear-election-sdk/schema/ballot.schema-0.0.json" },
     "session-request": {
-      "$schema": "http://json-schema.org/draft-04/schema#",
-      "title": "BoothSessionRequest",
-      "description": "Booth agent session request, v0",
       "type": "object",
       "properties": {
         "election": { "type": "string", "format": "uri" },
@@ -13,9 +10,6 @@
       "required": [ "election", "accessToken" ]
     },
     "session-response": {
-      "$schema": "http://json-schema.org/draft-04/schema#",
-      "title": "BoothSessionResponse",
-      "description": "Booth agent session response, v0",
       "type": "object",
       "properties": {
         "sessionKey": { "type": "string" },
@@ -34,9 +28,6 @@
       "required": [ "sessionKey", "ballot" ]
     },
     "cast-request": {
-      "$schema": "http://json-schema.org/draft-04/schema#",
-      "title": "BoothCastRequest",
-      "description": "Booth agent cast request, v0",
       "type": "object",
       "properties": {
         "sessionKey": { "type": "string" },
@@ -45,15 +36,9 @@
       "required": [ "sessionKey", "ballot" ]
     },
     "cast-response": {
-      "$schema": "http://json-schema.org/draft-04/schema#",
-      "title": "BoothCastResponse",
-      "description": "Booth agent cast response, v0",
       "type": "null"
     },
     "returns-request": {
-      "$schema": "http://json-schema.org/draft-04/schema#",
-      "title": "BoothReturnsRequest",
-      "description": "Booth agent returns request, v0",
       "type": "object",
       "properties": {
         "election": { "type": "string", "format": "uri" }
@@ -61,9 +46,6 @@
       "required": [ "election" ]
     },
     "returns-response": {
-      "$schema": "http://json-schema.org/draft-04/schema#",
-      "title": "BoothReturnsResponse",
-      "description": "Booth agent returns response, v0",
       "type": "object",
       "properties": {
         "ballotsIssued": { "type": "integer" },
