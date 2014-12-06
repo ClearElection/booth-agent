@@ -6,7 +6,9 @@ require 'rails/all'
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
 
-module Booth
+module BoothAgent
+  API_VERSION = "0.0"
+
   class Application < Rails::Application
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
@@ -20,8 +22,7 @@ module Booth
     # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
     # config.i18n.default_locale = :de
 
-    require "json/expand_refs" # in lib
-    api_schema = JSON.expand_refs! JSON.parse Rails.root.join("schema/api.schema.json").read()
+    api_schema = ClearElection::Schema.api("booth-agent", version: API_VERSION)
 
     config.middleware.insert_after ActionDispatch::Static, "CatchMiddlewareErrors"
     config.middleware.use Committee::Middleware::RequestValidation, schema: api_schema, raise: true, strict: true

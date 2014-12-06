@@ -6,7 +6,7 @@ module JSON
             uri = URI.parse(uri)
             source = case uri.scheme
                     when nil then nil
-                    when 'file' then Rails.root.join uri.path.sub(%r{^/}, '')
+                    when 'file' then ClearElection::Schema.root.join uri.path.sub(%r{^/}, '')
                     else uri
                     end
             if source
