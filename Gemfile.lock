@@ -128,7 +128,7 @@ GEM
     safe_yaml (1.0.4)
     schema_associations (1.2.2)
       schema_plus (>= 1.2.0)
-    schema_plus (1.7.0)
+    schema_plus (1.7.1)
       activerecord (>= 3.2)
       valuable
     schema_validations (1.0.0)
