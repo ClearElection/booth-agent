@@ -1,5 +1,5 @@
 PATH
-  remote: ../clear-election-sdk
+  remote: ../clear-election-sdk-ruby
   specs:
     clear-election-sdk (0.0.1)
       faraday
@@ -177,7 +177,7 @@ DEPENDENCIES
   its-it
   pg
   pry
-  rails (= 4.1.4)
+  rails (~> 4.1.4)
   rails-api
   rspec-rails
   schema_associations
