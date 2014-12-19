@@ -5,7 +5,7 @@ gem 'clear-election-sdk', "~> 0.0.0", path: "../clear-election-sdk-ruby"
 gem 'active_model_serializers', "~> 0.8.0"
 gem 'committee'
 gem 'pg'
-gem 'rails', '4.1.4'
+gem 'rails', '~> 4.1.4'
 gem 'rails-api'
 gem 'schema_associations'
 gem 'schema_plus'
