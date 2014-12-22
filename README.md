@@ -1,5 +1,7 @@
 # Booth Agent
 [![Build Status](https://secure.travis-ci.org/ClearElection/booth-agent.svg)](http://travis-ci.org/ClearElection/booth-agent)
+[![Coverage Status](https://img.shields.io/coveralls/ClearElection/booth-agent.svg)](https://coveralls.io/r/ClearElection/booth-agent)
+
 
 A basic rails app that acts as a booth agent for an online election:
 

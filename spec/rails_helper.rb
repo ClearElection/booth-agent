@@ -5,8 +5,12 @@ require File.expand_path("../../config/environment", __FILE__)
 require 'rspec/rails'
 require 'clear-election-sdk/factory'
 require 'clear-election-sdk/rspec'
+require 'coveralls'
 require "simplecov"
-
+SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter[
+  SimpleCov::Formatter::HTMLFormatter,
+  Coveralls::SimpleCov::Formatter
+]
 SimpleCov.start "rails"
 
 

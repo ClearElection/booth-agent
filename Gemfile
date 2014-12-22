@@ -21,6 +21,7 @@ group :development, :test do
 end
 
 group :test do
+  gem 'coveralls', require: false
   gem 'factory_girl_rails'
   gem 'its-it'
   gem 'simplecov'
