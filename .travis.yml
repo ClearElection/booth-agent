@@ -1,0 +1,6 @@
+language: ruby
+sudo: false
+rvm:
+- 2.1.5
+before_script:
+- psql -c 'create database ce_booth_test;' -U postgres
