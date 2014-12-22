@@ -1,10 +1,3 @@
-PATH
-  remote: ../clear-election-sdk-ruby
-  specs:
-    clear-election-sdk (0.0.1)
-      faraday
-      json-schema
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -47,6 +40,9 @@ GEM
       columnize (~> 0.8)
       debugger-linecache (~> 1.2)
       slop (~> 3.6)
+    clear-election-sdk (0.0.1)
+      faraday
+      json-schema
     coderay (1.1.0)
     columnize (0.9.0)
     committee (1.6.2)
@@ -171,7 +167,7 @@ DEPENDENCIES
   annotate
   awesome_print
   byebug
-  clear-election-sdk (~> 0.0.0)!
+  clear-election-sdk (~> 0.0.1)
   committee
   factory_girl_rails
   its-it
