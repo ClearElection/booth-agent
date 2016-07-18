@@ -10,7 +10,7 @@ class ApplicationController < ActionController::API
 
     response = Faraday.post(election.signin.uri + "redeem", election: election_uri, accessToken: accessToken)
     if not response.success?
-      render json: { error: "failed to redeem accessToken", signinResponse: response}, status: 403
+      render json: { error: "failed to redeem accessToken", signinResponse: response.body}, status: 403
       return
     end
 
